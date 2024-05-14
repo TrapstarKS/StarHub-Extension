@@ -43,7 +43,8 @@ while task.wait(1) do
 		end)
 
 		ScriptContext.ErrorDetailed:Connect(function(message, stackTrace, script, details, securityLevel)
-			if connection and (script == nil or not script:IsDescendantOf(game)) then sendOutput("ERROR", message:sub(1, 1) .. utf8.char(8203) .. message:sub(2)) end
+			local text = ("%s%s%s\n%s"):format(message:sub(1, 1), utf8.char(8203), message:sub(2), stackTrace)
+			if connection and (script == nil or not script:IsDescendantOf(game)) then sendOutput("ERROR", text) end
 		end)
 
 		warn("Authenticated...")

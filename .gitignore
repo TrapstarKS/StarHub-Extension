@@ -129,3 +129,7 @@ dist
 .pnp.*
 
 .fake
+
+# Any vsix package
+
+*.vsix
