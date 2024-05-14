@@ -20,7 +20,8 @@ while task.wait(1) do
 
 		connection.OnMessage:Connect(function(msg)
 			local func, err = loadstring(msg)
-			if not func then
+			if typeof(func) ~= "function" then
+				warn(func, err)
 				connection:Send(Encode({ type = "compile_error", error = "Syntax error: " .. (err or "Unknown error") }))
 				return
 			elseif err then
