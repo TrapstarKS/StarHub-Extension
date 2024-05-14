@@ -1,7 +1,8 @@
 {
   "name": "starhub-ws-serv",
   "displayName": "StarHub Ws Server",
-  "description": "",
+  "publisher": "StarHub-Community",
+  "description": "Code Exection from VSC from any Executor.",
   "repository": "https://github.com/TrapstarKSSKSKSKKS/StarHub-Extension",
   "version": "1.0.0",
   "engines": {
