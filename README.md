@@ -13,7 +13,9 @@ StarHub Ws Server is a extension for Visual Studio Code that allows you to run a
 You need to put this script in your roblox to connect with the extension.
 
 ```lua
+local IP = "" -- Put the IP address here. You leave it empty if you are going to use in same computer. (If you will use in other Device, you need to put the IP address of the computer that is running the extension)
 
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TrapstarKSSKSKSKKS/StarHub-Extension/main/src/wsConnection.lua"))()
 ```
 
 ## Credits
