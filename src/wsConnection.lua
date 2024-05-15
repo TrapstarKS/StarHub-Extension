@@ -14,8 +14,15 @@ while task.wait(1) do
 		connection:Send(Encode({ type = "auth", name = game.Players.LocalPlayer.Name }))
 		warn("Sent auth request to " .. URL .. ":33882")
 
+		local function tostringAll(...)
+			local args = { ... }
+			for i, v in ipairs(args) do args[i] = tostring(v) end
+			return args
+		end
+
 		local function sendOutput(output_type, ...)
-			if connection and checkcaller() then connection:Send(Encode({ type = "output", output_type = output_type, output = table.concat({ ... }, " ") })) end
+			local t = tostringAll(...)
+			if connection and checkcaller() then connection:Send(Encode({ type = "output", output_type = output_type, output = table.concat(t, " ") })) end
 		end
 
 		connection.OnMessage:Connect(function(msg)
