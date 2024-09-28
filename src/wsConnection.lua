@@ -4,12 +4,13 @@ local ScriptContext = game:GetService("ScriptContext")
 local websocket = WebSocket or websocket
 local Encode = function(...) return HttpService:JSONEncode(...) end
 local IP = ...
-local URL = IP ~= nil and IP ~= "" and IP or "localhost"
+local URL = IP ~= nil and IP ~= "" and IP or "127.0.0.1"
+local connection
 while task.wait(1) do
 	local s, r = pcall(function()
 		-- Will need change the localhost to your own ip address if you are using this on emulator or other device
 		warn("Starting connection to " .. URL .. ":33882")
-		local connection = websocket.connect(string.format("ws://%s:33882/", URL))
+		connection = websocket.connect(string.format("ws://%s:33882/", URL))
 		warn("Connected to " .. URL .. ":33882")
 		connection:Send(Encode({ type = "auth", name = game.Players.LocalPlayer.Name }))
 		warn("Sent auth request to " .. URL .. ":33882")
@@ -55,9 +56,13 @@ while task.wait(1) do
 		end)
 
 		warn("Authenticated...")
-		connection.OnClose:Wait()
-		connection = nil
-		warn("Disconnected from " .. URL .. ":33882")
+
+		connection.OnClose:Connect(function()
+			warn("Connection closed")
+			connection = nil
+		end)
+
+		repeat task.wait(1) until connection == nil
 	end)
 
 	if not s then warn("Error: " .. r) end
