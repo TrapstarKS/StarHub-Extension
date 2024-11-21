@@ -4,7 +4,7 @@
   "publisher": "StarHub-Community",
   "description": "Code Execution from VSC for any Executor.",
   "repository": "https://github.com/TrapstarKSSKSKSKKS/StarHub-Extension",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "engines": {
     "vscode": "^1.89.0"
   },
