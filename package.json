@@ -2,7 +2,7 @@
   "name": "starhub-ws-serv",
   "displayName": "StarHub Ws Server",
   "publisher": "StarHub-Community",
-  "description": "Code Exection from VSC from any Executor.",
+  "description": "Code Execution from VSC for any Executor.",
   "repository": "https://github.com/TrapstarKSSKSKSKKS/StarHub-Extension",
   "version": "1.0.0",
   "engines": {
@@ -26,10 +26,39 @@
         "title": "Activate"
       },
       {
+        "command": "starhub-ws-serv.executeSelectedCode",
+        "title": "Execute Selected Code"
+      },
+      {
         "command": "starhub-ws-serv.executeCode",
         "title": "Execute Code"
       }
-    ]
+    ],
+    "submenus": [
+      {
+        "id": "starhub-ws-serv.starhubMenu",
+        "label": "StarHub"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "submenu": "starhub-ws-serv.starhubMenu",
+          "group": "navigation",
+          "when": "editorFocus"
+        }
+      ],
+      "starhub-ws-serv.starhubMenu": [
+        {
+          "command": "starhub-ws-serv.executeCode",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "starhub-ws-serv.executeSelectedCode",
+          "when": "editorHasSelection && !editorHasMultipleSelections"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

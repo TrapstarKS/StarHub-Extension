@@ -89,45 +89,63 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 
 	context.subscriptions.push(
-		commands.registerCommand('starhub-ws-serv.executeCode', () => {
-			let editor = window.activeTextEditor;
-			if (!editor) {
-				window.showErrorMessage("No active editor");
+		vscode.commands.registerCommand("starhub-ws-serv.executeSelectedCode", () => {
+			const editor = vscode.window.activeTextEditor;
+			if (!editor || editor.selection.isEmpty) {
+				vscode.window.showErrorMessage("No code selected to execute.");
 				return;
 			}
 
-			let code = editor.document.getText();
+			const code = editor.document.getText(editor.selection);
 
 			if (connectedUsers.length === 0) {
-				window.showErrorMessage("No users connected");
+				vscode.window.showErrorMessage("No users connected");
 				return;
 			}
 
-			let selectedUser: ConnectedUser | undefined;
+			const selectedUser = connectedUsers.length === 1 ? connectedUsers[0] : undefined;
 
-			if (connectedUsers.length === 1) {
-				selectedUser = connectedUsers[0];
+			if (selectedUser) {
 				selectedUser.WS.send(code);
-				window.showInformationMessage("Code sent to " + selectedUser.name);
+				vscode.window.showInformationMessage(`Code sent to ${selectedUser.name}`);
 			} else {
-				const userNames = connectedUsers.map((user) => ({
-					label: user.name,
-					description: "Connected user"
-				}));
-
-				window.showQuickPick(userNames).then((selectedUserName) => {
-					if (!selectedUserName) {
-						console.log('No user selected.');
-						return;
+				vscode.window.showQuickPick(connectedUsers.map((user) => user.name)).then((selectedName) => {
+					const user = connectedUsers.find((u) => u.name === selectedName);
+					if (user) {
+						user.WS.send(code);
+						vscode.window.showInformationMessage(`Code sent to ${user.name}`);
 					}
+				});
+			}
+		})
+	);
 
-					selectedUser = connectedUsers.find((user) => user.name === selectedUserName.label);
+	context.subscriptions.push(
+		vscode.commands.registerCommand("starhub-ws-serv.executeCode", () => {
+			const editor = vscode.window.activeTextEditor;
+			if (!editor) {
+				vscode.window.showErrorMessage("No active editor.");
+				return;
+			}
 
-					if (selectedUser) {
-						window.showInformationMessage("Code sent to " + selectedUser.name);
-						selectedUser.WS.send(code);
-					} else {
-						console.log('No user selected or user not found.');
+			const code = editor.document.getText();
+
+			if (connectedUsers.length === 0) {
+				vscode.window.showErrorMessage("No users connected");
+				return;
+			}
+
+			const selectedUser = connectedUsers.length === 1 ? connectedUsers[0] : undefined;
+
+			if (selectedUser) {
+				selectedUser.WS.send(code);
+				vscode.window.showInformationMessage(`Code sent to ${selectedUser.name}`);
+			} else {
+				vscode.window.showQuickPick(connectedUsers.map((user) => user.name)).then((selectedName) => {
+					const user = connectedUsers.find((u) => u.name === selectedName);
+					if (user) {
+						user.WS.send(code);
+						vscode.window.showInformationMessage(`Code sent to ${user.name}`);
 					}
 				});
 			}
@@ -138,11 +156,12 @@ export function activate(context: vscode.ExtensionContext) {
 		window.showInformationMessage('Hello World from starhub-ws-serv!');
 	}));
 
-	const button = window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-	button.text = "$(debug-start) Execute code";
-	button.command = "starhub-ws-serv.executeCode";
-	button.tooltip = "Execute code on a connected user";
-	button.show();
+	const button = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+    button.text = "$(debug-start) Execute Code";
+    button.command = "starhub-ws-serv.executeCode";
+    button.tooltip = "Execute code on a connected user";
+    button.show();
+    context.subscriptions.push(button);
 }
 
 export function deactivate() {
