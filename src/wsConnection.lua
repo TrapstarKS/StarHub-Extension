@@ -52,7 +52,7 @@ while task.wait(1) do
 
 		ScriptContext.ErrorDetailed:Connect(function(message, stackTrace, script, details, securityLevel)
 			local text = ("%s%s%s\n%s"):format(message:sub(1, 1), utf8.char(8203), message:sub(2), stackTrace)
-			if connection and (script == nil or not script:IsDescendantOf(game)) then sendOutput("ERROR", text) end
+			if connection and (script == nil or (not script:IsDescendantOf(game) and not script:IsA("ModuleScript"))) then sendOutput("ERROR", text) end
 		end)
 
 		warn("Authenticated...")
